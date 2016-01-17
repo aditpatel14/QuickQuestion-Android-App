@@ -1,11 +1,58 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity"
+    android:background="@color/super_light_blue">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/rounded_background">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/Theme.App.Base"
+            android:textColor="@color/white"
+            android:hint="Enter Class Code"
+            android:textColorHint="@color/white"
+            android:fontFamily="sans-serif"
+            android:ems="10"
+            android:id="@+id/class_code_edittext"
+            android:clickable="true"
+            android:layout_gravity="center_horizontal"
+            />
+
+
+        <RelativeLayout
+            android:layout_height="40dp"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/dark_blue"
+            android:id="@+id/relativeLayout3"
+            android:layout_below="@+id/relativeLayout2"
+            android:layout_marginTop="15dp"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textColor="@color/white"
+                android:text="Enter Class"
+                android:id="@+id/enter_class_button"
+                android:gravity="center"
+                android:clickable="true"
+                android:textSize="20dp" />
+        </RelativeLayout>
+    </LinearLayout>
 </RelativeLayout>

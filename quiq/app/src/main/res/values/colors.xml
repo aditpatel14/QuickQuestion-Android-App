@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="white">#ffffff</color>
+    <color name="black">#ff000000</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="super_light_blue">#c5eff7</color>
+    <color name="light_blue">#81cfe0</color>
+    <color name="dark_blue">#2980b9</color>
+    <color name="navy_blue">#2C3e50</color>
+
+
+
+
+
+
+
+</resources>
