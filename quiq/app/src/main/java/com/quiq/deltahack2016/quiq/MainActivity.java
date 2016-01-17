@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     @InjectView(R.id.enter_class_button)
     Button enterButton;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
