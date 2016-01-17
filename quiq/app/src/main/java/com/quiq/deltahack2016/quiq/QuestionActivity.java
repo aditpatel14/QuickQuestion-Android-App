@@ -1,6 +1,5 @@
 package com.quiq.deltahack2016.quiq;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +54,7 @@ public class QuestionActivity extends AppCompatActivity {
 
     List<QuestionItem> questions;
     FireBaseManager fireManager;
+    private String classCode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,22 +68,53 @@ public class QuestionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 newQuestionPopup.setVisibility(View.VISIBLE);
-            }
-        });
+    }
+});
 
         setupFireManager();
         setupNewQuestionButton();
-    }
-    private void setupFireManager() {
-        final Activity context = this;
+        }
+private void setupFireManager() {
+final QuestionActivity context = this;
         fireManager = FireBaseManager.getInstance(this);
         fireManager.addListener(new FireBaseManager.Listener() {
+@Override
+public void questionsLoaded(List<QuestionItem> questions) {
+        context.questions = questions;
+        questionsRecyclyer.setAdapter(new QuestionsAdapter(context, questions));
+        }
+        });
+        this.classCode = getIntent().getStringExtra(EXTRA_CLASS_CODE);
+        startRefreshThread();
+        }
+private boolean threadRunning = true;
+private void startRefreshThread(){
+
+final Thread thread = new Thread(new Runnable()
+        {
+            final int MIN_INTERVAL = 1 * 500;
+            long lastMessageChecked = System.currentTimeMillis();
             @Override
-            public void questionsLoaded(List<QuestionItem> questions) {
-                questionsRecyclyer.setAdapter(new QuestionsAdapter(context, questions));
+            public void run(){
+                int count = 1;
+                while (threadRunning){
+                    if(System.currentTimeMillis() - lastMessageChecked > MIN_INTERVAL){
+                        lastMessageChecked = System.currentTimeMillis();
+                        fireManager.getQuestions(classCode);
+                        Log.d("REFRESH CHECKING THREAD", "CHECKED FOR REFRESH");
+                        count = 0;
+                    }
+                    count++;
+                }
+                Log.d("REFRESH CHECKING THREAD", "STOPPED");
             }
         });
-        fireManager.getQuestions(getIntent().getStringExtra(EXTRA_CLASS_CODE));
+        thread.start();
+        Log.d("REFRESH CHECKING THREAD", "STARTED");
+    }
+    @Override public void finish(){
+        super.finish();
+        threadRunning = false;
     }
     private void setupNewQuestionButton(){
         newQuestionSendButton.setOnClickListener(new View.OnClickListener() {
@@ -106,58 +138,70 @@ public class QuestionActivity extends AppCompatActivity {
             }
         });
     }
-}
-class QuestionsAdapter extends RecyclerView.Adapter<QuestionViewHolder>{
-    Context context;
-    List<QuestionItem> questions;
-    public QuestionsAdapter(Context context, List<QuestionItem> questions){
-        this.context = context;
-        this.questions = questions;
-    }
 
-    @Override
-    public QuestionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new QuestionViewHolder(LayoutInflater.from(context).inflate(R.layout.question_item_view, parent, false));
-    }
-
-    @Override
-    public void onBindViewHolder(QuestionViewHolder holder, int position) {
-        holder.fill(questions.get(position));
-    }
-
-    @Override
-    public int getItemCount() {
-        return questions.size();
-    }
-}
-
-class QuestionViewHolder extends RecyclerView.ViewHolder{
-
-    @InjectView(R.id.question_text)
-    TextView questionText;
-
-    @InjectView(R.id.question_votes)
-    TextView questionVotes;
-
-    @InjectView(R.id.button_downvote)
-    ImageButton buttonDownvote;
-
-    @InjectView(R.id.button_upvote)
-    ImageButton buttonUpvote;
-
-    public QuestionViewHolder(View itemView) {
-        super(itemView);
-        ButterKnife.inject(this, itemView);
-    }
-
-    public void fill(QuestionItem questionItem){
-        questionText.setText(questionItem.getQuestionText());
-        if(questionItem.getVotes() != null){
-            questionVotes.setText(questionItem.getVotes().size() + "");
+    public class QuestionsAdapter extends RecyclerView.Adapter<QuestionViewHolder>{
+        Context context;
+        List<QuestionItem> questions;
+        public QuestionsAdapter(Context context1, List<QuestionItem> questions1){
+            context = context1;
+            questions = questions1;
         }
-        else{
-            questionVotes.setText(0 + "");
+
+        @Override
+        public QuestionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new QuestionViewHolder(LayoutInflater.from(context).inflate(R.layout.question_item_view, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(QuestionViewHolder holder, int position) {
+            holder.fill(questions.get(position), classCode, position + "");
+        }
+
+        @Override
+        public int getItemCount() {
+            return questions.size();
         }
     }
 
+    public class QuestionViewHolder extends RecyclerView.ViewHolder{
+
+        @InjectView(R.id.question_text)
+        TextView questionText;
+
+        @InjectView(R.id.question_votes)
+        TextView questionVotes;
+
+        @InjectView(R.id.button_downvote)
+        ImageButton buttonDownvote;
+
+        @InjectView(R.id.button_upvote)
+        ImageButton buttonUpvote;
+
+        public QuestionViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.inject(this, itemView);
+
+        }
+
+        public void fill(final QuestionItem questionItem, final String courseCode, final String questionNumber){
+            if(questionItem != null){
+                questionText.setText(questionItem.getQuestionText());
+                questionVotes.setText(questionItem.getVotes() + "");
+                buttonUpvote.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FireBaseManager.getInstanceUnsafe().sendVote(courseCode, questionNumber, questionItem.getVotes() + 1);
+                    }
+                });
+
+                buttonDownvote.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FireBaseManager.getInstanceUnsafe().sendVote(courseCode, questionNumber, questionItem.getVotes() - 1);
+                    }
+                });
+            }
+        }
+
+    }
 }

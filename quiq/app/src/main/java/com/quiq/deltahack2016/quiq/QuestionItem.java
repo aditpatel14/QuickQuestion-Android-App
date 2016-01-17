@@ -3,8 +3,6 @@ package com.quiq.deltahack2016.quiq;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 /**
  * Created by Vanshil on 2016-01-16.
  */
@@ -12,11 +10,13 @@ public class QuestionItem {
     @SerializedName("text")
     @Expose
     private String questionText;
-
     @SerializedName("votes")
     @Expose
-    private List<Integer> votes;
-    public QuestionItem(String questionText, List<Integer> votes) {
+    private int votes;
+
+    private String answer;
+    private boolean answered;
+    public QuestionItem(String questionText, int votes) {
         this.questionText = questionText;
         this.votes = votes;
     }
@@ -29,11 +29,11 @@ public class QuestionItem {
         this.questionText = questionText;
     }
 
-    public List<Integer> getVotes() {
+    public int getVotes() {
         return votes;
     }
 
-    public void setVotes(List<Integer> votes) {
+    public void setVotes(int votes) {
         this.votes = votes;
     }
 }

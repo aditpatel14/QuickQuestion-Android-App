@@ -54,7 +54,7 @@
                 android:background="@color/dark_blue"
                 />
 
-            <EditText
+            <com.quiq.deltahack2016.quiq.QuiqEditText
                 android:id="@+id/new_question_text"
                 android:theme="@style/Theme.App.Base.Lightblue"
                 android:layout_width="match_parent"

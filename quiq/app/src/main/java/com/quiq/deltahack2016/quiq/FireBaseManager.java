@@ -23,6 +23,9 @@ import retrofit.Retrofit;
 public class FireBaseManager {
     public static FireBaseManager instance;
     private List<Listener> listeners;
+    public static synchronized FireBaseManager getInstanceUnsafe(){
+        return instance;
+    }
     public static synchronized FireBaseManager getInstance(Context context){
         if(instance == null){
             instance = new FireBaseManager(context);
@@ -52,27 +55,28 @@ public class FireBaseManager {
     }
 
     public void getQuestions(String courseName){
+        if(courseName.length() > 0){
+            Call<QuestionsListResponse> fireCall =  fireService.getQuestions(courseName, nowDate);
+            fireCall.enqueue(new Callback<QuestionsListResponse>() {
+                @Override
+                public void onResponse(Response<QuestionsListResponse> response, Retrofit retrofit) {
+                    Log.d("FireBaseManager", response.raw() + "");
+                    notifyQuestionsLoaded(response.body().getQuestions());
+                }
 
-        Call<QuestionsListResponse> fireCall =  fireService.getQuestions(courseName, nowDate);
-        fireCall.enqueue(new Callback<QuestionsListResponse>() {
-            @Override
-            public void onResponse(Response<QuestionsListResponse> response, Retrofit retrofit) {
-                Log.d("FireBaseManager", response.raw() + "");
-                notifyQuestionsLoaded(response.body().getQuestions());
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Log.d("FireBaseManager", t.getMessage() + "");
-            }
-        });
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.d("FireBaseManager", t.getMessage() + "");
+                }
+            });
+        }
     }
 
     public void sendVote(String courseName, String questionName, int vote){
-        Call<Response> fireCall = fireService.sendVote(courseName, questionName, nowDate, vote);
-        fireCall.enqueue(new Callback<Response>() {
+        Call<String> fireCall = fireService.sendVote(courseName, nowDate, questionName, new VoteItem(vote));
+        fireCall.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Response<Response> response, Retrofit retrofit) {
+            public void onResponse(Response<String> response, Retrofit retrofit) {
 
             }
 
@@ -94,6 +98,8 @@ public class FireBaseManager {
             listener.questionsLoaded(questions);
         }
     }
+
+
 
     interface Listener{
         void questionsLoaded(List<QuestionItem> questions);

@@ -6,10 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 import retrofit.Call;
-import retrofit.Response;
 import retrofit.http.Body;
 import retrofit.http.GET;
-import retrofit.http.POST;
+import retrofit.http.PATCH;
 import retrofit.http.Path;
 
 /**
@@ -20,8 +19,8 @@ public interface FirebaseService {
     @GET("/instructors/Do%20Not%20Touch/{lectureName}/lectures/{lectureDay}.json")
     Call<QuestionsListResponse> getQuestions(@Path("lectureName") String lectureName, @Path("lectureDay") String lectureDay) ;
 
-    @POST("/instructors/{instructor}/{lectureName}/lectures/{lectureDay}/{questionNumber}/votes.json")
-    Call<Response> sendVote (@Path("lectureName") String lectureName, @Path("lectureDay") String lectureDay, @Path("questionNumber") String questionNumnber, @Body int vote);
+    @PATCH("/instructors/Do%20Not%20Touch/{lectureName}/lectures/{lectureDay}/questions/{questionNumber}.json")
+    Call<String> sendVote (@Path("lectureName") String lectureName, @Path("lectureDay") String lectureDay, @Path("questionNumber") String questionNumber, @Body VoteItem vote);
 
 }
 class QuestionsListResponse{
@@ -31,5 +30,11 @@ class QuestionsListResponse{
 
     public List<QuestionItem> getQuestions() {
         return questions;
+    }
+}
+class VoteItem{
+    int votes;
+    public VoteItem(int votes){
+        this.votes = votes;
     }
 }
