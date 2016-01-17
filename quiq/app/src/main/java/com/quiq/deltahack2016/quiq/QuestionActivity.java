@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -140,10 +141,10 @@ class QuestionViewHolder extends RecyclerView.ViewHolder{
     TextView questionVotes;
 
     @InjectView(R.id.button_downvote)
-    ImageButton buttonDownvote;
+    ImageView buttonDownvote;
 
     @InjectView(R.id.button_upvote)
-    ImageButton buttonUpvote;
+    ImageView buttonUpvote;
 
     public QuestionViewHolder(View itemView) {
         super(itemView);
