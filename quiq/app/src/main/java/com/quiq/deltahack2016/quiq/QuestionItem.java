@@ -39,6 +39,22 @@ public class QuestionItem implements Comparable<QuestionItem>{
         this.votes = votes;
     }
 
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public boolean isAnswered() {
+        return answered;
+    }
+
+    public void setAnswered(boolean answered) {
+        this.answered = answered;
+    }
+
     @Override
     public int compareTo(QuestionItem another) {
         int diff = another.getVotes() - this.getVotes();
