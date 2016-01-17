@@ -1,63 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_margin="5dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="@color/light_grey"
     android:elevation="10dp"
-
-    >
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/question_text"
-        android:layout_toLeftOf="@+id/question_votes"
-        android:layout_alignParentLeft="true"
-        android:text="A question is a linguistic expression to make a request for information, or the request made using such an expression."
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"/>
+        android:layout_alignParentLeft="true"
+        android:layout_margin="10dp"
+        android:layout_toLeftOf="@+id/question_votes"
+        android:text="A question is a linguistic expression to make a request for information, or the request made using such an expression." />
 
     <TextView
         android:id="@+id/question_votes"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/linearlayout_buttons"
         android:layout_width="wrap_content"
-        android:text="5"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_margin="10dp"
+        android:layout_toLeftOf="@+id/linearlayout_buttons"
         android:singleLine="true"
-        android:textSize="16sp"
-        android:layout_height="wrap_content"/>
+        android:text="5"
+        android:textSize="16sp" />
 
     <LinearLayout
         android:id="@+id/linearlayout_buttons"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp">
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
 
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
             android:id="@+id/button_upvote"
-            android:src="@drawable/up_arrow"
-            android:scaleType="fitXY"
-            android:layout_margin="5dp"
-            android:clickable="true" />
-
-        <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:id="@+id/button_downvote"
-            android:src="@drawable/down_arrow"
-            android:scaleType="fitXY"
             android:layout_margin="5dp"
-            android:clickable="true" />
+            android:clickable="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/up_arrow" />
+
+        <ImageView
+            android:id="@+id/button_downvote"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_margin="5dp"
+            android:clickable="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/down_arrow" />
 
 
     </LinearLayout>
-
-
-
 </RelativeLayout>
