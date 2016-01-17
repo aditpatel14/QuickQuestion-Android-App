@@ -11,10 +11,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,7 @@ import butterknife.InjectView;
 public class QuestionActivity extends AppCompatActivity {
 
     private static final String EXTRA_CLASS_CODE = "extra_final";
+    String newQuestionToPost = "";
 
     public static void start(Context context, String classCode){
         Intent intent = new Intent(context, QuestionActivity.class);
@@ -45,6 +49,9 @@ public class QuestionActivity extends AppCompatActivity {
     @InjectView(R.id.new_question_text)
     EditText newQuestionText;
 
+    @InjectView(R.id.new_question_send_button)
+    Button newQuestionSendButton;
+
     List<QuestionItem> questions;
     FireBaseManager fireManager;
     @Override
@@ -62,10 +69,11 @@ public class QuestionActivity extends AppCompatActivity {
                 newQuestionPopup.setVisibility(View.VISIBLE);
             }
         });
-        setupFireManager();
 
+        setupFireManager();
+        setupNewQuestionButton();
     }
-    private void setupFireManager(){
+    private void setupFireManager() {
         final Activity context = this;
         fireManager = FireBaseManager.getInstance(this);
         fireManager.addListener(new FireBaseManager.Listener() {
@@ -75,7 +83,28 @@ public class QuestionActivity extends AppCompatActivity {
             }
         });
         fireManager.getQuestions(getIntent().getStringExtra(EXTRA_CLASS_CODE));
+    }
+    private void setupNewQuestionButton(){
+        newQuestionSendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newQuestionPopup.setVisibility(View.GONE);
 
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+
+                //Gets the Question from the edit textview if its not blank
+                if(newQuestionText.getText().toString().equals("") == false ) {
+                    newQuestionToPost = newQuestionText.getText().toString();
+                    Toast.makeText(QuestionActivity.this, newQuestionToPost, Toast.LENGTH_SHORT).show();
+                }
+                //clears the textview after extracting the question
+                newQuestionText.setText("");
+
+            }
+        });
     }
 }
 class QuestionsAdapter extends RecyclerView.Adapter<QuestionViewHolder>{
