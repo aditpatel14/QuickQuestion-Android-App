@@ -14,14 +14,6 @@
         <item name="android:windowActionBarOverlay">true</item>
     </style>
 
-
-    <style name="EditTextCustomHolo" parent="android:Widget.EditText">
-        <!--<item name="android:background">@drawable/apptheme_edit_text_holo_light</item>-->
-        <item name="android:background">@color/dark_blue</item>
-
-        <item name="android:textColor">#ffffff</item>
-    </style>
-
     <style name="Theme.App.Base" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorControlNormal">#c5c5c5</item>
         <item name="colorControlActivated">@color/white</item>
