@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -64,7 +65,6 @@ public class QuestionActivity extends AppCompatActivity {
         questions = new ArrayList<>();
         questionsRecyclyer.setLayoutManager(new LinearLayoutManager(this));
         questionsRecyclyer.setAdapter(new QuestionsAdapter(this, questions));
-
         newQuestionFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,11 +81,13 @@ final QuestionActivity context = this;
         fireManager.addListener(new FireBaseManager.Listener() {
 @Override
 public void questionsLoaded(List<QuestionItem> questions) {
+        Collections.sort(questions);
         context.questions = questions;
         questionsRecyclyer.setAdapter(new QuestionsAdapter(context, questions));
         }
         });
         this.classCode = getIntent().getStringExtra(EXTRA_CLASS_CODE);
+        setTitle("Questions in: " + classCode);
         startRefreshThread();
         }
 private boolean threadRunning = true;
@@ -155,7 +157,7 @@ final Thread thread = new Thread(new Runnable()
 
         @Override
         public void onBindViewHolder(QuestionViewHolder holder, int position) {
-            holder.fill(questions.get(position), classCode, position + "");
+            holder.fill(questions.get(position), classCode, questions.get(position).getIndex() + "");
         }
 
         @Override
