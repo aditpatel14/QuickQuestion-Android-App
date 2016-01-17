@@ -14,7 +14,9 @@
         android:layout_alignParentLeft="true"
         android:layout_margin="10dp"
         android:layout_toLeftOf="@+id/question_votes"
-        android:text="A question is a linguistic expression to make a request for information, or the request made using such an expression." />
+        android:text="A question is a linguistic expression to make a request for information, or the request made using such an expression."
+        android:clickable="true"
+        android:layout_alignParentEnd="false" />
 
     <TextView
         android:id="@+id/question_votes"

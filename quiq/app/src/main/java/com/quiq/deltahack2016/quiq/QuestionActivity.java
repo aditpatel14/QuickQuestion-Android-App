@@ -2,6 +2,7 @@ package com.quiq.deltahack2016.quiq;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -198,10 +199,30 @@ final Thread thread = new Thread(new Runnable()
                     @Override
                     public void onClick(View v) {
                         FireBaseManager.getInstanceUnsafe().sendVote(courseCode, questionNumber, questionItem.getVotes() - 1);
+
+
                     }
                 });
+                questionText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if(questionItem.isAnswered() == true ){
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(questionItem.getAnswer()));
+                            startActivity(intent);
+                        }
+
+
+                    }
+                });
+
             }
         }
 
+    }
+
+    public void onBuyTicketClicked(View view){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(""));
+        startActivity(intent);
     }
 }
