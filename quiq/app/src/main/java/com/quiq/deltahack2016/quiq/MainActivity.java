@@ -1,5 +1,6 @@
 package com.quiq.deltahack2016.quiq;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,6 +38,12 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
+    }
+    @OnClick(R.id.enter_class_button)
+    public void openQuestionActivity(View view) {
+        Intent intent = new Intent(this, QuestionActivity.class);
+        System.out.println("started question");
+        startActivity(intent);
     }
 
 //    @Override
