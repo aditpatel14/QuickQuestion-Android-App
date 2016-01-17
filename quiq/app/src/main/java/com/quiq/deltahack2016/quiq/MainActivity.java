@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -30,8 +31,16 @@ public class MainActivity extends AppCompatActivity {
         enterButton.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View view) {
-                        String classCode = classCodeText.getText().toString();
-                        QuestionActivity.start(context, classCode);
+
+                        if(classCodeText.getText().toString().equals("") == false){
+                            String classCode = classCodeText.getText().toString();
+                            QuestionActivity.start(context, classCode);
+                        }
+                        else{
+                            Toast.makeText(MainActivity.this, "Please enter a class code", Toast.LENGTH_SHORT).show();
+
+                        }
+
 
                     }
                 });
