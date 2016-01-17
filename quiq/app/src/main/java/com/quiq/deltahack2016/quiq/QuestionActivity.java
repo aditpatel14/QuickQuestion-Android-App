@@ -19,9 +19,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -61,6 +66,7 @@ public class QuestionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
         ButterKnife.inject(this);
+        Firebase.setAndroidContext(this);
         questions = new ArrayList<>();
         questionsRecyclyer.setLayoutManager(new LinearLayoutManager(this));
         questionsRecyclyer.setAdapter(new QuestionsAdapter(this, questions));
@@ -119,6 +125,7 @@ final Thread thread = new Thread(new Runnable()
         threadRunning = false;
     }
     private void setupNewQuestionButton(){
+        final Context context = this;
         newQuestionSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,9 +137,41 @@ final Thread thread = new Thread(new Runnable()
                         InputMethodManager.HIDE_NOT_ALWAYS);
 
                 //Gets the Question from the edit textview if its not blank
-                if(newQuestionText.getText().toString().equals("") == false ) {
+                String[] profanities = {"potato"};
+                if(newQuestionText.getText().toString().equals("") == false) {
                     newQuestionToPost = newQuestionText.getText().toString();
-                    Toast.makeText(QuestionActivity.this, newQuestionToPost, Toast.LENGTH_SHORT).show();
+                    for(String profanity : profanities){
+                        if(newQuestionToPost.contains(profanity)){
+                            Toast.makeText(context, "Please use clean language", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                    String nowDate = FireBaseManager.getInstanceUnsafe().getNowDate();
+
+                    Firebase questionRef = new Firebase("https://quiq.firebaseio.com/instructors/Do Not Touch/" +
+                            classCode + "/lectures/" + nowDate + "/questions/" + questions.size());
+
+                    Map<String, Object> newQuestion = new HashMap<String, Object>();
+                    newQuestion.put("index", questions.size());
+                    newQuestion.put("answer", "");
+                    newQuestion.put("answered", false);
+                    newQuestion.put("text", newQuestionToPost);
+                    newQuestion.put("votes", 1);
+                    System.out.println(questionRef.getPath().toString());
+                    questionRef.setValue(newQuestion, new Firebase.CompletionListener() {
+                        @Override
+                        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                            if (firebaseError != null) {
+                                System.out.println("Data could not be saved. " + firebaseError.getMessage());
+                            } else {
+                                System.out.println("Data saved successfully.");
+                            }
+                        }
+                    });
+
+
+
+                    Toast.makeText(context, newQuestionToPost, Toast.LENGTH_SHORT).show();
                 }
                 //clears the textview after extracting the question
                 newQuestionText.setText("");

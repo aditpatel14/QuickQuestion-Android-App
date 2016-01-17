@@ -99,7 +99,9 @@ public class FireBaseManager {
         }
     }
 
-
+    public String getNowDate() {
+        return nowDate;
+    }
 
     interface Listener{
         void questionsLoaded(List<QuestionItem> questions);
