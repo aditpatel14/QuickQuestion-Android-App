@@ -9,6 +9,7 @@
     <TextView
         android:id="@+id/question_text"
         android:layout_toLeftOf="@+id/question_votes"
+        android:layout_alignParentLeft="true"
         android:text="A question is a linguistic expression to make a request for information, or the request made using such an expression."
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

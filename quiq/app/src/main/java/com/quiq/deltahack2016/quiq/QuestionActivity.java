@@ -1,11 +1,14 @@
 package com.quiq.deltahack2016.quiq;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -20,7 +23,15 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class QuestionActivity extends AppCompatActivity {
+
     private static final String EXTRA_CLASS_CODE = "extra_final";
+
+    public static void start(Context context, String classCode){
+        Intent intent = new Intent(context, QuestionActivity.class);
+        intent.putExtra(EXTRA_CLASS_CODE, classCode);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
 
     @InjectView(R.id.recycler)
     RecyclerView questionsRecyclyer;
@@ -35,39 +46,49 @@ public class QuestionActivity extends AppCompatActivity {
     EditText newQuestionText;
 
     List<QuestionItem> questions;
-
-    public static void start(Context context, String classCode){
-        Intent intent = new Intent(context, QuestionActivity.class);
-        intent.putExtra(EXTRA_CLASS_CODE, classCode);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
-    }
-
-
+    FireBaseManager fireManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
         ButterKnife.inject(this);
         questions = new ArrayList<>();
-        questionsRecyclyer.setAdapter(new QuestionsAdapter(questions));
+        questionsRecyclyer.setLayoutManager(new LinearLayoutManager(this));
+        questionsRecyclyer.setAdapter(new QuestionsAdapter(this, questions));
+
         newQuestionFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 newQuestionPopup.setVisibility(View.VISIBLE);
             }
         });
+        setupFireManager();
+
+    }
+    private void setupFireManager(){
+        final Activity context = this;
+        fireManager = FireBaseManager.getInstance(this);
+        fireManager.addListener(new FireBaseManager.Listener() {
+            @Override
+            public void questionsLoaded(List<QuestionItem> questions) {
+                questionsRecyclyer.setAdapter(new QuestionsAdapter(context, questions));
+            }
+        });
+        fireManager.getQuestions(getIntent().getStringExtra(EXTRA_CLASS_CODE));
+
     }
 }
 class QuestionsAdapter extends RecyclerView.Adapter<QuestionViewHolder>{
+    Context context;
     List<QuestionItem> questions;
-    public QuestionsAdapter(List<QuestionItem> questions){
+    public QuestionsAdapter(Context context, List<QuestionItem> questions){
+        this.context = context;
         this.questions = questions;
     }
 
     @Override
     public QuestionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new QuestionViewHolder(parent);
+        return new QuestionViewHolder(LayoutInflater.from(context).inflate(R.layout.question_item_view, parent, false));
     }
 
     @Override
@@ -77,9 +98,10 @@ class QuestionsAdapter extends RecyclerView.Adapter<QuestionViewHolder>{
 
     @Override
     public int getItemCount() {
-        return 0;
+        return questions.size();
     }
 }
+
 class QuestionViewHolder extends RecyclerView.ViewHolder{
 
     @InjectView(R.id.question_text)
@@ -101,7 +123,12 @@ class QuestionViewHolder extends RecyclerView.ViewHolder{
 
     public void fill(QuestionItem questionItem){
         questionText.setText(questionItem.getQuestionText());
-        questionVotes.setText(questionItem.getVotes() + "");
+        if(questionItem.getVotes() != null){
+            questionVotes.setText(questionItem.getVotes().size() + "");
+        }
+        else{
+            questionVotes.setText(0 + "");
+        }
     }
 
 }

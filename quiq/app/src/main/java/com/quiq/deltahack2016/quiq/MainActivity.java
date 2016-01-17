@@ -1,10 +1,8 @@
 package com.quiq.deltahack2016.quiq;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,15 +26,11 @@ public class MainActivity extends AppCompatActivity {
 
         final Activity context = this;
         enterButton.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    public void onClick(View view)
-                    {
-                        Log.v("EditText", classCodeText.getText().toString());
+                new View.OnClickListener() {
+                    public void onClick(View view) {
+                        String classCode = classCodeText.getText().toString();
+                        QuestionActivity.start(context, classCode);
 
-                        Intent intent = new Intent(context, QuestionActivity.class);
-                        System.out.println("started question");
-                        startActivity(intent);
                     }
                 });
 
