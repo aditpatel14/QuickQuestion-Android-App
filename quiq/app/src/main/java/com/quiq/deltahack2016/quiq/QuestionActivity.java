@@ -1,10 +1,15 @@
 package com.quiq.deltahack2016.quiq;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -15,11 +20,29 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class QuestionActivity extends AppCompatActivity {
+    private static final String EXTRA_CLASS_CODE = "extra_final";
 
     @InjectView(R.id.recycler)
     RecyclerView questionsRecyclyer;
 
+    @InjectView(R.id.new_question_fab)
+    FloatingActionButton newQuestionFab;
+
+    @InjectView(R.id.popup_new_question)
+    FrameLayout newQuestionPopup;
+
+    @InjectView(R.id.new_question_text)
+    EditText newQuestionText;
+
     List<QuestionItem> questions;
+
+    public static void start(Context context, String classCode){
+        Intent intent = new Intent(context, QuestionActivity.class);
+        intent.putExtra(EXTRA_CLASS_CODE, classCode);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +50,13 @@ public class QuestionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_question);
         ButterKnife.inject(this);
         questions = new ArrayList<>();
-    questionsRecyclyer.setAdapter(new QuestionsAdapter(questions));
-
+        questionsRecyclyer.setAdapter(new QuestionsAdapter(questions));
+        newQuestionFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newQuestionPopup.setVisibility(View.VISIBLE);
+            }
+        });
     }
 }
 class QuestionsAdapter extends RecyclerView.Adapter<QuestionViewHolder>{
