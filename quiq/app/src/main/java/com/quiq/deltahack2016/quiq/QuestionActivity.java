@@ -2,6 +2,7 @@ package com.quiq.deltahack2016.quiq;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -89,6 +90,13 @@ final QuestionActivity context = this;
 public void questionsLoaded(List<QuestionItem> questions) {
         Collections.sort(questions);
         context.questions = questions;
+        List<QuestionItem> questionClone = new ArrayList<QuestionItem>();
+        questionClone.addAll(questions);
+        for(QuestionItem questionItem : questionClone){
+            if(questionItem == null || questionItem.getQuestionText().equals("")){
+                questions.remove(questionItem);
+            }
+        }
         questionsRecyclyer.setAdapter(new QuestionsAdapter(context, questions));
         }
         });
@@ -144,12 +152,13 @@ final Thread thread = new Thread(new Runnable()
                     for(String profanity : profanities){
                         if(newQuestionToPost.contains(profanity)){
                             Toast.makeText(context, "Please use clean language", Toast.LENGTH_SHORT).show();
+                            newQuestionText.setText("");
                             return;
                         }
                     }
                     String nowDate = FireBaseManager.getInstanceUnsafe().getNowDate();
 
-                    Firebase questionRef = new Firebase("https://quiq.firebaseio.com/instructors/Do Not Touch/" +
+                    Firebase questionRef = new Firebase("https://quiq.firebaseio.com/instructors/Smith/" +
                             classCode + "/lectures/" + nowDate + "/questions/" + questions.size());
 
                     Map<String, Object> newQuestion = new HashMap<String, Object>();
@@ -226,7 +235,7 @@ final Thread thread = new Thread(new Runnable()
         }
 
         public void fill(final QuestionItem questionItem, final String courseCode, final String questionNumber){
-            if(questionItem != null){
+            if(questionItem != null && !questionItem.getQuestionText().equals("")){
                 questionText.setText(questionItem.getQuestionText());
                 questionVotes.setText(questionItem.getVotes() + "");
                 buttonUpvote.setOnClickListener(new View.OnClickListener() {
@@ -244,18 +253,16 @@ final Thread thread = new Thread(new Runnable()
 
                     }
                 });
-                questionText.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        if(questionItem.isAnswered() == true ){
+                if(questionItem.isAnswered()){
+                    questionText.setTextColor(Color.GREEN);
+                    questionText.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
                             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(questionItem.getAnswer()));
                             startActivity(intent);
                         }
-
-
-                    }
-                });
+                    });
+                }
 
             }
         }

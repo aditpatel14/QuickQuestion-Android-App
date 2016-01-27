@@ -16,10 +16,10 @@ import retrofit.http.Path;
  */
 public interface FirebaseService {
 
-    @GET("/instructors/Do%20Not%20Touch/{lectureName}/lectures/{lectureDay}.json")
+    @GET("/instructors/Smith/{lectureName}/lectures/{lectureDay}.json")
     Call<QuestionsListResponse> getQuestions(@Path("lectureName") String lectureName, @Path("lectureDay") String lectureDay) ;
 
-    @PATCH("/instructors/Do%20Not%20Touch/{lectureName}/lectures/{lectureDay}/questions/{questionNumber}.json")
+    @PATCH("/instructors/Smith/{lectureName}/lectures/{lectureDay}/questions/{questionNumber}.json")
     Call<String> sendVote (@Path("lectureName") String lectureName, @Path("lectureDay") String lectureDay, @Path("questionNumber") String questionNumber, @Body VoteItem vote);
 
 }
